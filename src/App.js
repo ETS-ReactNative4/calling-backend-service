@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
-const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
+
+const apiEndopoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
   state = {
@@ -9,19 +10,26 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const { data: posts } = await axios.get(apiEndpoint);
+    const { data: posts } = await axios.get(apiEndopoint);
     this.setState({ posts });
   }
 
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await axios.post(apiEndpoint, obj);
+    const { data: post } = await axios.post(apiEndopoint, obj);
+
     const posts = [post, ...this.state.posts];
     this.setState({ posts });
   };
 
-  handleUpdate = post => {
-    console.log("Update", post);
+  handleUpdate = async post => {
+    post.title = "UPDATE";
+    await axios.put(apiEndopoint + "/" + post.id, post);
+
+    const posts = [...this.state.posts];
+    const index = posts.indexOf(post);
+    posts[index] = { ...post };
+    this.setState({ posts });
   };
 
   handleDelete = post => {
